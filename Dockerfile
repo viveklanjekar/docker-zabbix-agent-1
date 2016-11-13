@@ -16,15 +16,18 @@ RUN \
   ./configure --enable-agent && \
   make install && \
   rpm -e --nodeps make gcc && \
-  yum remove -y svn automake && \
   useradd -G wheel zabbix && \
   rm -rf  /usr/local/src/zabbix && \
+  yum install -y sudo nc curl && \
+  curl -kLs http://stedolan.github.io/jq/download/linux64/jq -o /usr/bin/jq && \
+  chmod +x /usr/bin/jq && \
+  echo "zabbix ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+  yum remove -y svn automake && \
   yum clean all
 
 COPY container-files /
 
-RUN \
-    chown -R zabbix:wheel /usr/local/etc/
+RUN chown -R zabbix:wheel /usr/local/etc/
 
 USER zabbix
 
